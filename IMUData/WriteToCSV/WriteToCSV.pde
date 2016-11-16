@@ -44,8 +44,9 @@ void serialEvent(Serial myPort){
     val = trim(val); //gets rid of any whitespace or Unicode nonbreakable space
     println(val); //Optional, useful for debugging. If you see this, you know data is being sent. Delete if  you like. 
     float sensorVals[] = float(split(val, ',')); //parses the packet from Arduino and places the valeus into the sensorVals array. I am assuming floats. Change the data type to match the datatype coming from Arduino. 
-   
-    TableRow newRow = table.addRow(); //add a row for this new reading
+    if (sensorVals.length == 7)
+    {
+      TableRow newRow = table.addRow(); //add a row for this new reading
     newRow.setInt("id", table.lastRowIndex());//record a unique identifier (the row's index)
     
     //record sensor information. Customize the names so they match your sensor column names. 
@@ -60,6 +61,8 @@ void serialEvent(Serial myPort){
     readingCounter++; //optional, use if you'd like to write your file every numReadings reading cycles
     
     //saves the table as a csv in the same folder as the sketch every numReadings. 
+    
+    }
     
    }
    
