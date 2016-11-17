@@ -16,7 +16,7 @@ void setup()
   //CAUTION: your Arduino port number is probably different! Mine happened to be 1. Use a "handshake" sketch to figure out and test which port number your Arduino is talking on. A "handshake" establishes that Arduino and Processing are listening/talking on the same port.
   //Here's a link to a basic handshake tutorial: https://processing.org/tutorials/overview/
   
-  myPort = new Serial(this, "COM9", 9600); //set up your port to listen to the serial port
+  myPort = new Serial(this, "COM9", 115200); //set up your port to listen to the serial port
    
   table.addColumn("id"); //This column stores a unique identifier for each record. We will just count up from 0 - so your first reading will be ID 0, your second will be ID 1, etc. 
   
@@ -29,6 +29,7 @@ void setup()
   table.addColumn("GyX");
   table.addColumn("GyY");
   table.addColumn("GyZ");
+  table.addColumn("Timer");
  
 }
  
@@ -37,14 +38,15 @@ void serialEvent(Serial myPort){
   {
     start = true;
   }
+  String val = myPort.readStringUntil('\n'); //The newline separator separates each Arduino loop. We will parse the data by each newline separator. 
+
   if (start == true)
   {
-    String val = myPort.readStringUntil('\n'); //The newline separator separates each Arduino loop. We will parse the data by each newline separator. 
     if (val!= null) { //We have a reading! Record it.
     val = trim(val); //gets rid of any whitespace or Unicode nonbreakable space
     println(val); //Optional, useful for debugging. If you see this, you know data is being sent. Delete if  you like. 
     float sensorVals[] = float(split(val, ',')); //parses the packet from Arduino and places the valeus into the sensorVals array. I am assuming floats. Change the data type to match the datatype coming from Arduino. 
-    if (sensorVals.length == 7)
+    if (sensorVals.length == 8)
     {
       TableRow newRow = table.addRow(); //add a row for this new reading
     newRow.setInt("id", table.lastRowIndex());//record a unique identifier (the row's index)
@@ -57,6 +59,7 @@ void serialEvent(Serial myPort){
     newRow.setFloat("GyX", sensorVals[4]);
     newRow.setFloat("GyY", sensorVals[5]);
     newRow.setFloat("GyZ", sensorVals[6]);
+    newRow.setFloat("Timer", sensorVals[7]);
     
     readingCounter++; //optional, use if you'd like to write your file every numReadings reading cycles
     
