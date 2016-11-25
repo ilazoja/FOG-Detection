@@ -6,6 +6,7 @@ Table table; //table where we will read in and store values. You can name it som
 int numReadings = 500; //keeps track of how many readings you'd like to take before writing the file. 
 int readingCounter = 0; //counts each reading to compare to numReadings. 
 boolean start = false;
+int IsFOG = 0;
  
 String fileName;
 void setup()
@@ -30,6 +31,7 @@ void setup()
   table.addColumn("GyY");
   table.addColumn("GyZ");
   table.addColumn("Timer");
+  table.addColumn("IsFOG");
  
 }
  
@@ -37,6 +39,7 @@ void serialEvent(Serial myPort){
   if(keyPressed == true && keyCode == SHIFT)
   {
     start = true;
+    IsFOG = 0;
   }
   String val = myPort.readStringUntil('\n'); //The newline separator separates each Arduino loop. We will parse the data by each newline separator. 
 
@@ -60,6 +63,8 @@ void serialEvent(Serial myPort){
     newRow.setFloat("GyY", sensorVals[5]);
     newRow.setFloat("GyZ", sensorVals[6]);
     newRow.setFloat("Timer", sensorVals[7]);
+
+    newRow.setFloat("IsFOG", IsFOG);
     
     readingCounter++; //optional, use if you'd like to write your file every numReadings reading cycles
     
@@ -78,10 +83,19 @@ void serialEvent(Serial myPort){
       table.clearRows();
       start = false;
     }
+   
    //<>//
 }
  
 void draw()
 { 
    //visualize your sensor data in real time here! In the future we hope to add some cool and useful graphic displays that can be tuned to different ranges of values. 
+}
+
+void keyReleased()
+{
+  if (key == '/'){
+      if (IsFOG == 0) IsFOG = 1;
+      if (IsFOG == 1) IsFOG = 0;
+    }
 }
