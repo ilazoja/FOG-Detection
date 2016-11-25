@@ -12,10 +12,11 @@ void setup() {
  Wire.write(0x6B);
  Wire.write(0);
  Wire.endTransmission(true);
- Serial.begin(9600);
+ Serial.begin(115200);
 }
 
 void loop() {
+ float timer = millis();
  Wire.beginTransmission(mpu);
  Wire.write(0x3B);
  Wire.endTransmission(false);
@@ -27,8 +28,8 @@ void loop() {
  GyX = Wire.read()<<8|Wire.read();
  GyY = Wire.read()<<8|Wire.read();
  GyZ = Wire.read()<<8|Wire.read();
- 
- 
+
+
  Serial.print(AcX);
  Serial.print(",");
  Serial.print(AcY);
@@ -41,9 +42,11 @@ void loop() {
  Serial.print(",");
  Serial.print(GyY);
  Serial.print(",");
- Serial.println(GyZ);
+ Serial.print(GyZ);
+  Serial.print(",");
+Serial.println(timer);
 
- delay(30);
+ //delay(50);
 
  
 }
